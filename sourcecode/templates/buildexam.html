@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CEH Practice Exam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script defer src="{{ url_for('static', filename='timer.js') }}"></script>
+</head>
+
+<style>
+  body {
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
+      url('/static/bg4.avif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  @keyframes zoom-shake {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05) rotate(0.5deg); }
+    100% { transform: scale(1); }
+  }
+
+  .hover-zoom-shake:hover {
+    animation: zoom-shake 0.3s ease-in-out;
+  }
+
+  header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px 20px 0;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.badge {
+  background-color: #081477;
+  color: white;
+  padding: 12px 35px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  animation: fadeLeftBadge 1.5s ease forwards;
+  z-index: 10;
+  position: relative;
+  width: 200px;
+
+}
+
+@keyframes fadeLeftBadge {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+</style>
+
+<body class="font-sans">
+
+  <div class="flex justify-center">
+    <div class="bg-white rounded-b-2xl shadow-md w-full max-w-4xl text-center py-6">
+      <h1 class="text-2xl font-bold">CEH Practice Exam</h1>
+      <div class="flex justify-center mt-2 gap-8 text-sm text-gray-700">
+        
+        <div class="flex items-center gap-1">
+          <i class="fas fa-hourglass-half text-blue-600 text-xl"></i>
+          <span class="text-blue-700 font-bold text-lg">Time Left:</span>
+          <span id="timer" class="text-blue-700 font-bold text-xl">60:00</span>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <i class="fas fa-pen-to-square text-blue-600 text-xl"></i>
+          <span class="text-gray-700 font-medium">Questions:</span>
+          <span>{{ questions|length }}</span>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <i class="fas fa-medal text-yellow-500 text-xl"></i>
+          <span class="text-gray-700 font-medium">Total Points:</span>
+          <span>{{ questions|length }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <header>
+    <div class="badge fade-left">apt2002</div>
+  </header>
+
+<div class="max-w-3xl mx-auto mt-6">
+  <div class="flex justify-between mb-1 text-sm font-medium text-gray-700">
+    <span>Progress</span>
+    <span id="progress-count">0 / {{ questions|length }} answered</span>
+  </div>
+  <div class="w-full bg-gray-200 rounded-full h-4">
+    <div id="progress-bar" class="bg-blue-600 h-4 rounded-full" style="width: 0%; transition: width 0.3s;"></div>
+  </div>
+</div>
+
+<div class="max-w-3xl mx-auto mt-8 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-6 rounded-xl shadow-md">
+  <h2 class="font-semibold text-lg mb-2">⚠️ Take a look</h2>
+  <ul class="list-disc pl-5 space-y-1">
+    <li>Do not refresh the page during the exam.</li>
+    <li>Slide and Answer Each question is mandatory.</li>
+    <li>After walking through all questions ..Submit the exam</li>
+    <li>Answers to all questions have been updated in the database after detailed analysis, logical thinking, and thorough research from accurate resources. No copy-pasting was involved, and the answers are 100% accurate.</li>
+  </ul>
+</div>
+
+  <div id="slides" class="max-w-3xl mx-auto mt-8 space-y-6">
+    {% for q in questions %}
+    <div class="question-slide bg-white p-6 rounded-xl shadow-md hidden" data-id="{{ q.id }}">
+      <p class="font-semibold mb-4">Q{{ loop.index }}. {{ q.question | safe }}</p>
+      <div class="space-y-3">
+        {% for opt in q.options %}
+        <label class="flex items-center gap-2">
+          <input type="radio" name="q{{ q.id }}" value="{{ loop.index0 }}" class="accent-blue-600" />
+          <span>{{ opt }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="flex justify-center mt-6 gap-6">
+
+  <button 
+    onclick="prevSlide()" 
+    class="bg-gray-100 text-gray-700 px-4 py-3 rounded-full shadow-sm hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 hover-zoom-shake">
+    <i class="fas fa-arrow-left text-xl"></i>
+  </button>
+
+  <button 
+    onclick="nextSlide()" 
+    class="bg-gray-100 text-gray-700 px-4 py-3 rounded-full shadow-sm hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 hover-zoom-shake">
+    <i class="fas fa-arrow-right text-xl"></i>
+  </button>
+</div>
+
+<div class="flex justify-center mt-6 mb-12 gap-6">
+  <button 
+    onclick="submitExam()" 
+    class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer hover-zoom-shake">
+    Submit Exam
+  </button>
+  
+  <button 
+    onclick="terminateExam()" 
+    class="bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow-md hover:bg-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer hover-zoom-shake">
+    Terminate Exam
+  </button>
+</div>
+
+<div id="warningModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-yellow-100 border-l-4 border-yellow-600 max-w-md p-6 rounded-xl shadow-lg">
+    <h2 class="text-yellow-800 font-bold text-lg mb-2 flex items-center gap-2">
+      <i class="fas fa-triangle-exclamation text-yellow-600 text-xl"></i>
+      Reminder!
+    </h2>
+    <p class="text-yellow-800 mb-4 text-sm leading-relaxed">
+      Ouhh! Remember, I think your TryHackMe machine is about to expire.
+      Please return to the TryHackMe page and add extra one hour to your machine.
+      Otherwise, the exam might be interrupted and your progress could be lost.
+    </p>
+    <div class="flex justify-end">
+      <button onclick="closeWarning()" class="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-semibold hover:bg-yellow-700 transition">
+        Got it!
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="terminateModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+  <div class="bg-white rounded-2xl shadow-2xl z-10 p-8 w-full max-w-md mx-4 text-center animate-fade-in-up">
+    <div class="text-red-600 text-3xl mb-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </div>
+    <h2 class="text-xl font-semibold text-gray-900 mb-2">End Exam Session?</h2>
+    <p class="text-gray-600 mb-6 text-sm">This action will discard your progress. Are you sure you want to continue?</p>
+    <div class="flex justify-center gap-4">
+      <button onclick="confirmTerminate()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition hover:scale-105">
+        Yes, Terminate
+      </button>
+      <button onclick="closeTerminateModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-6 rounded-lg transition">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="incompleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl text-center">
+    <h2 class="text-xl font-semibold text-red-600 mb-3 flex justify-center items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Incomplete Submission
+    </h2>
+    <p class="text-gray-700 mb-6">Please answer all questions before submitting the exam.</p>
+    <button onclick="closeIncompleteModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition hover:scale-105">
+      OK, Got it
+    </button>
+  </div>
+</div>
+
+<div id="timerExpiredModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl text-center animate-fade-in">
+    <h2 class="text-2xl font-bold text-red-700 mb-3 flex justify-center items-center gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Time Expired
+    </h2>
+    <p class="text-gray-700 mb-6">
+      Your exam time has expired.<br/>
+      Your progress has been lost.<br/>
+      You will be redirected to the start page.
+    </p>
+    <button onclick="redirectToStart()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition hover:scale-105">
+      Go to Start Now
+    </button>
+  </div>
+</div>
+
+<div id="selectionAlertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full text-center animate-fade-in">
+    <div class="text-red-600 text-4xl mb-4">
+      <i class="fas fa-circle-exclamation"></i>
+    </div>
+    <h2 class="text-xl font-semibold text-gray-900 mb-2">Please Select an Option</h2>
+    <p class="text-gray-600 mb-6 text-sm">
+      You must choose an answer before moving to the next question.
+    </p>
+    <button onclick="closeSelectionAlert()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition hover:scale-105">
+      OK, Got it
+    </button>
+  </div>
+</div>
+
+<script>
+
+    let warningIntervalStarted = false;
+
+function showWarning() {
+  document.getElementById("warningModal").classList.remove("hidden");
+}
+
+function closeWarning() {
+  document.getElementById("warningModal").classList.add("hidden");
+}
+
+function startWarningLoop() {
+  if (warningIntervalStarted) return;
+  warningIntervalStarted = true;
+
+  setTimeout(() => {
+    showWarning(); 
+    setInterval(showWarning, 2700000); 
+  }, 2700000); 
+}
+
+window.addEventListener("load", startWarningLoop);
+
+</script>
+
+  <script>
+    const slides = document.querySelectorAll(".question-slide");
+    let current = 0;
+    slides[current].classList.remove("hidden");
+
+    function nextSlide() {
+    const selected = slides[current].querySelector("input[type='radio']:checked");
+    if (!selected) {
+       showSelectionAlert();
+       return;
+      }
+      if (current < slides.length - 1) {
+        slides[current].classList.add("hidden");
+        slides[++current].classList.remove("hidden");
+      }
+    }
+
+    function prevSlide() {
+      if (current > 0) {
+        slides[current].classList.add("hidden");
+        slides[--current].classList.remove("hidden");
+      }
+    }
+
+    function submitExam() {
+  const answers = {};
+  let allAnswered = true;
+
+  slides.forEach(slide => {
+    const qid = slide.getAttribute("data-id");
+    const selected = slide.querySelector("input[type='radio']:checked");
+    if (selected) {
+      answers[qid] = selected.value;
+    } else {
+      allAnswered = false;
+    }
+  });
+
+  if (!allAnswered) {
+  showIncompleteModal();
+  return;
+  }
+
+  fetch("/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const url = `/result?score=${data.score}&total=${data.total}`;
+    window.location.href = url;
+  });
+}
+
+
+  function terminateExam() {
+  const modal = document.getElementById('terminateModal');
+  modal.classList.remove('hidden');
+}
+
+function closeTerminateModal() {
+  const modal = document.getElementById('terminateModal');
+  modal.classList.add('hidden');
+}
+
+function confirmTerminate() {
+  window.location.href = "/";
+}
+
+function showIncompleteModal() {
+  document.getElementById('incompleteModal').classList.remove('hidden');
+}
+
+function closeIncompleteModal() {
+  document.getElementById('incompleteModal').classList.add('hidden');
+}
+
+function showTimerExpiredModal() {
+  document.getElementById('timerExpiredModal').classList.remove('hidden');
+}
+
+function redirectToStart() {
+  window.location.href = "/start";
+}
+function showSelectionAlert() {
+  document.getElementById('selectionAlertModal').classList.remove('hidden');
+}
+
+function closeSelectionAlert() {
+  document.getElementById('selectionAlertModal').classList.add('hidden');
+}
+</script>
+
+  <script>
+function updateProgress() {
+  const total = slides.length;
+  let answered = 0;
+
+  slides.forEach(slide => {
+    const selected = slide.querySelector("input[type='radio']:checked");
+    if (selected) answered++;
+  });
+
+  const percent = (answered / total) * 100;
+  document.getElementById("progress-bar").style.width = percent + "%";
+  document.getElementById("progress-count").innerText = `${answered} / ${total} answered`;
+}
+
+document.querySelectorAll("input[type='radio']").forEach(input => {
+  input.addEventListener("change", updateProgress);
+});
+</script>
+
+</body>
+</html>

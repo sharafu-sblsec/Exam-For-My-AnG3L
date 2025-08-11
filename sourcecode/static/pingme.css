@@ -1,0 +1,257 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  color: #FFD700; 
+}
+
+:root {
+  --fade-distance: 16px;
+  --fade-duration: 0.7s;
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(var(--fade-distance));
+  animation: fadeUp var(--fade-duration) ease forwards;
+  will-change: opacity, transform;
+}
+
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn var(--fade-duration) ease forwards;
+  will-change: opacity;
+}
+
+.delay-1 { animation-delay: .1s; }
+.delay-2 { animation-delay: .2s; }
+.delay-3 { animation-delay: .3s; }
+.delay-4 { animation-delay: .4s; }
+.delay-5 { animation-delay: .5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .fade-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--fade-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+
+
+:root {
+    --r: 49vmax;          
+    --stroke: 2px;        
+    --alpha: 1;           
+    --color: rgba(255, 255, 255, var(--alpha));
+    --bg: #0f1115;        
+    --vertical-shift: 10vh; 
+  }
+  .half-circle {
+    position: fixed;
+    top: calc(50% + var(--vertical-shift));
+    transform: translateY(-50%);
+    width: calc(var(--r) * 2);
+    height: calc(var(--r) * 2);
+    border: var(--stroke) solid var(--color);
+    border-radius: 50%;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .half-circle.left {
+    left: calc(-1 * var(--r) + 40px);  
+    z-index: 2;  
+  }
+
+  .half-circle.right {
+    right: calc(-1 * var(--r) + 40px); 
+    z-index: 1;
+  }
+
+
+
+:root {
+    --particle-life: 250ms;
+  }
+  .particle {
+    position: fixed;
+    left: 0; top: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity, filter;
+    animation: exhaust var(--particle-life) ease-out forwards;
+  }
+
+  @keyframes exhaust {
+    0% {
+      opacity: 1;
+      transform: translate(var(--x), var(--y)) scale(1);
+      filter: blur(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy))) scale(0);
+      filter: blur(2px);
+    }
+  }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  
+  background: 
+    linear-gradient(rgba(8, 20, 119, 0.7), rgba(8, 20, 119, 0.7)), 
+    url('/static/bg2.avif');
+  background-size: cover;
+  background-position: center;
+
+  color: white;
+  overflow-x: hidden; 
+  margin: 0;
+  min-height: 100vh;
+  position: relative; 
+}
+
+header {
+  display: flex;
+  justify-content: flex-start;  
+  align-items: center;
+  padding: 20px 40px 20px 0;
+  padding-left: 0;
+
+  
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+   
+}
+
+.logo {
+  background: linear-gradient(to right, #c6c6e0, #7c81d9);
+  padding: 10px 25px;
+  color: #010a78;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  animation: fadeLeftBadge 1.5s ease forwards;
+  z-index: 10;
+  position: relative;
+  width: 200px;
+}
+
+nav {
+  display: flex;
+  gap: 30px;
+  margin-left: auto; 
+}
+
+nav .nav-link {
+  text-decoration: none;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+}
+
+nav .nav-link.active,
+nav .nav-link:hover {
+  color: white;
+}
+
+main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 100px 100px;
+  position: relative;
+}
+
+.contact-info {
+  max-width: 450px;
+}
+
+.contact-info h1 {
+  font-size: 3.5rem;
+  margin-bottom: 40px;
+}
+
+.contact-info h1 .bold {
+  font-weight: bold;
+}
+
+.info {
+  font-size: 1.4rem;
+}
+
+.info .label {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+body::before {
+  content: "";
+  position: fixed;        
+  top: 300px;
+  left: -200px;
+  width: 700px;           
+  height: 700px;
+  background: radial-gradient(circle, #d9d9f3, #8181c3);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.8;
+  clip-path: inset(0 0 0 0); 
+}
+
+body::after {
+  content: none;
+}
+
+@keyframes fadeLeftBadge {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+@media (max-width: 768px) {
+  header {
+    flex-wrap: wrap-reverse;
+    
+  }
+
+  nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    padding-bottom: 30px;
+  }
+}

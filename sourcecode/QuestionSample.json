@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "question": "Updated500+RealQuestionsinApp!!this is just sample sample?",
+    "options": [
+      "hahar",
+      "hahaha",
+      "Correct answer",
+      "hahahhaha"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 2,
+    "question": "Updated500+RealQuestionsiApp!!this is just sample sample?",
+    "options": [
+      "hahahhah",
+      "hahahahhaha",
+      "correct answer",
+      "ahahahahhahah"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 3,
+    "question": "Updated500+RealQuestionsinApp!!this is just sample sample?",
+    "options": [
+      "80",
+      "443",
+      "21",
+      "22"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 4,
+    "question": "Updated500+RealQuestionsinApp!!this is just sample sample?",
+    "options": [
+      "correct answer",
+      "Hahahahaha",
+      "hahahahhahaa",
+      "hahahahhah"
+    ],
+    "answer": 0
+  },
+  {
+  "id": 5,
+  "question": "Consider the following Nmap output:<br><img src='/static/nmap1.avif' alt='Nmap Output' style='max-width:auto; height:auto;'><br>What command-line parameter could you use to determine the type and version number of the web server?",
+  "options": ["-sV", "-sS", "-Pn", "-V"],
+  "answer": 1
+},
+  {
+    "id": 6,
+    "question": "What is the proper response for a NULL scan if the port is open?",
+    "options": [
+      "SYN",
+      "ACK",
+      "FIN",
+      "PSH",
+      "RST",
+      "No response"
+    ],
+    "answer": 5
+  }
+]

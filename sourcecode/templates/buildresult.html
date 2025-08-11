@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Results</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+  
+  body {
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
+      url('/static/bg3.avif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+.badge {
+  background-color: #081477;
+  color: white;
+  padding: 12px 35px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  animation: fadeLeftBadge 1.5s ease forwards;
+  z-index: 10;
+  position: relative;
+  width: 200px;
+  margin-top: 20px;
+}
+
+@keyframes fadeLeftBadge {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fade-in 0.6s ease-out;
+    }
+  </style>
+</head>
+<header>
+    <div class="badge fade-left">apt2002</div>
+  </header>
+<body class="min-h-screen flex items-center justify-center font-['Inter'] px-4 py-10">
+  <div class="l p-8 max-w-xl w-full animate-fade-in">
+    
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-800">{{ 'Congratulations!' if passed else 'Better Luck Next Time!' }}</h1>
+      <p class="text-gray-600 mt-2 text-sm">Here is your performance summary</p>
+    </div>
+
+    <div class="flex justify-center mb-8">
+      <div class="relative w-48 h-48">
+        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="85" stroke="#e5e7eb" stroke-width="15" fill="none" />
+          <circle id="progress-ring" cx="100" cy="100" r="85"
+            stroke="#3b82f6" stroke-width="15" fill="none"
+            stroke-linecap="round"
+            stroke-dasharray="534.07"
+            stroke-dashoffset="534.07"
+            class="transition-all duration-[1500ms] ease-out" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <div id="score-percent" class="text-3xl font-bold text-gray-800">0%</div>
+          <div class="text-xs text-gray-500 mt-1">Your Score</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 text-center mb-6">
+      <div class="bg-blue-50 rounded-xl py-4">
+        <div class="text-xl font-bold text-blue-700">{{ score }}</div>
+        <div class="text-sm text-gray-600">Correct Answers</div>
+      </div>
+      <div class="bg-gray-50 rounded-xl py-4">
+        <div class="text-xl font-bold text-gray-700">{{ total }}</div>
+        <div class="text-sm text-gray-600">Total Questions</div>
+      </div>
+    </div>
+
+    <div class="flex justify-center mb-6">
+      <span class="px-4 py-1 rounded-full text-sm font-medium 
+        {{ 'bg-green-100 text-green-800 border border-green-200' if passed 
+           else 'bg-red-100 text-red-800 border border-red-200' }}">
+        {{ '✓ Passed' if passed else '✗ Not Passed' }}
+      </span>
+    </div>
+    
+{% if is_premium and passed %}
+
+<div class="flex justify-center mt-6 mb-8">
+  <button id="show-certificate" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition hover:scale-105">
+    Click here, poocheey
+  </button>
+</div>
+{% endif %}
+
+{% if is_premium and not passed %}
+
+<div class="flex justify-center mt-6 mb-8">
+  <button id="show-failed-cert" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition hover:scale-105">
+    You still deserve one ❤️
+  </button>
+</div>
+{% endif %}
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/start" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition hover:scale-105 text-center">
+        Retake Exam
+      </a>
+      <a href="/" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md transition hover:scale-105 text-center">
+        Close
+      </a>
+    </div>
+
+    <div class="text-center text-sm text-gray-400 mt-6">
+      Result generated on <span id="timestamp"></span>
+    </div>
+  </div>
+
+<div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-6 w-96 shadow-2xl text-center">
+    <h2 class="text-2xl font-bold text-green-700 mb-2">Poocheeey..ibade click 💖</h2>
+    <p class="text-gray-700 mb-6">You passed little princess! Here is your certificate.</p>
+    <div class="flex justify-center gap-4">
+      <a href="/downloadcert" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow hover:scale-105 transition">
+        Download
+      </a>
+      <button onclick="closeModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="failedCertificateModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-6 w-96 shadow-2xl text-center">
+    <h2 class="text-2xl font-bold text-red-600 mb-2">You tried your best poocheey.. ❤️</h2>
+    <p class="text-gray-700 mb-6">Here’s something to remind you to keep going.</p>
+    <div class="flex justify-center gap-4">
+      <a href="/downloadfailcert" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow hover:scale-105 transition">
+        Download
+      </a>
+      <button onclick="closeFailedModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    const score = {{ score }};
+    const total = {{ total }};
+    const percent = Math.round((score / total) * 100);
+
+    const scoreText = document.getElementById('score-percent');
+    let current = 0;
+    const interval = setInterval(() => {
+      current += 2;
+      if (current >= percent) {
+        scoreText.textContent = percent + '%';
+        clearInterval(interval);
+      } else {
+        scoreText.textContent = current + '%';
+      }
+    }, 30);
+
+    const circle = document.getElementById('progress-ring');
+    const radius = 85;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (percent / 100) * circumference;
+    setTimeout(() => {
+      circle.style.strokeDashoffset = offset;
+      circle.style.stroke = percent >= 70 ? "#16a34a" : percent >= 50 ? "#facc15" : "#ef4444";
+    }, 300);
+
+    document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+  </script>
+
+  <script>
+  const showCertBtn = document.getElementById('show-certificate');
+  const certModal = document.getElementById('certificateModal');
+
+  if (showCertBtn && certModal) {
+    showCertBtn.addEventListener('click', () => {
+      certModal.classList.remove('hidden');
+    });
+  }
+
+  function closeModal() {
+    const certModal = document.getElementById('certificateModal');
+    certModal.classList.add('hidden');
+  }
+
+  const showFailedBtn = document.getElementById('show-failed-cert');
+  const failedModal = document.getElementById('failedCertificateModal');
+
+  if (showFailedBtn && failedModal) {
+    showFailedBtn.addEventListener('click', () => {
+      failedModal.classList.remove('hidden');
+    });
+  }
+
+  function closeFailedModal() {
+    failedModal.classList.add('hidden');
+  }
+</script>
+
+</body>
+</html>

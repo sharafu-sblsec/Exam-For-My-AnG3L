@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CEH Practice</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+  <link rel="stylesheet" href="/static/home.css">
+</head>
+<body>
+  <header>
+    <div class="badge fade-left">apt2002</div>
+    <nav>
+      <a href="#" class="nav-link active">Home</a>
+      <a href="/pingme" class="nav-link">Pingme</a>
+      <a href="/start" class="nav-link">Startexam</a>
+      
+    </nav>
+  </header>
+
+  <div class="rings">
+    <div class="ring outer"></div>
+    <div class="ring inner"></div>
+  </div>
+
+  <main>
+    <div class="text-section fade-text">
+      <h1><span class="bold">CEH-EXAM</span> Practice</h1>
+      <p>
+        Welcome to CEH exam practice Test.This app offers a 3 hour(Actual CEH exam provides 4 hours..! i think 2 hours is enough..),Randomize 125 question practice test from 350+ Questions db
+        that mirrors like Certified Ethical Hacker previous exams. You won’t see answers during or after the test, making it
+        a true exam experience.prepare good for original exam then you can Pass this test easily.fail, and you'll see
+        your score to help you improve. Practice seriously. Prepare smart. Each test wiil randomize different 125 questions.!!! Nannaaayi vaa!!!
+      </p>
+    </div>
+    <div class="blue-box fade-up"></div>
+  </main>
+
+  <script src="{{ url_for('static', filename='home.js') }}"></script>
+  <script src="/static/home.js"></script>
+  <script src="{{ url_for('static', filename='boom2.js') }}"></script>
+  <script src="/static/boom2.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Start Exam </title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='start.css') }}">
+  <link rel="stylesheet" href="/static/start.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+  <div class="corner-tr"></div>
+
+  <header>
+    <div class="badge fade-left">apt2002</div>
+    <nav>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/pingme" class="nav-link">Pingme</a>
+      <a href="#" class="nav-link active">Startexam</a>
+    </nav>
+  </header>
+
+
+  <div class="rings">
+    <div class="ring outer"></div>
+    <div class="ring inner"></div>
+  </div>
+
+
+  <main>
+    <section class="exam-intro">
+      <h1>Type your Name here</h1>
+
+      <label class="name-wrapper" for="username">
+        <input id="username" type="text" />
+      </label>
+
+      <p class="instructions">
+        TYPE YOUR NAME AND CLICK THE 'START EXAM' BUTTON TO ENTER THE EXAM PORTAL AND BEGIN THE TEST.
+        THE EXAM DURATION IS 3 HOURS AND CONSISTS OF 125 QUESTIONS. ANSWER EACH QUESTION, SUBMIT THE EXAM,
+        AND CHECK WHETHER YOU PASSED OR FAILED. YOU CAN VIEW YOUR SCORE OUT OF 125, BUT THE CORRECT ANSWERS
+        WILL NOT BE SHOWN. RESEARCH, STUDY, AND COME BACK AGAIN TO PASS.
+      </p>
+
+      <button id="startExamBtn" class="start-btn">START EXAM</button>
+    </section>
+  </main>
+
+<div id="nameAlertModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white rounded-xl p-6 max-w-sm w-full text-center shadow-2xl animate-fade-in-up">
+    <div class="text-red-600 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 17h.01M4.293 6.707a1 1 0 011.414 0L12 13.414l6.293-6.707a1 1 0 011.414 1.414l-7 7.5a1 1 0 01-1.414 0l-7-7.5a1 1 0 010-1.414z" />
+      </svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Name Required</h3>
+    <p class="text-gray-600 text-sm mb-4">Please enter your name before starting the exam.</p>
+    <button onclick="closeNameAlert()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-5 rounded-lg shadow transition hover:scale-105">
+      OK
+    </button>
+  </div>
+</div>
+
+<div id="payloadAlertModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white rounded-xl p-6 max-w-sm w-full text-center shadow-2xl animate-fade-in-up">
+    <div class="text-yellow-500 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 17h.01M4.293 6.707a1 1 0 011.414 0L12 13.414l6.293-6.707a1 1 0 011.414 1.414l-7 7.5a1 1 0 01-1.414 0l-7-7.5a1 1 0 010-1.414z" />
+      </svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Evideyo entho oru thkararu</h3>
+    <p class="text-gray-600 text-sm mb-4">Only letter sand numbers allowed.</p>
+    <button onclick="closePayloadAlert()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-5 rounded-lg shadow transition hover:scale-105">
+      OK
+    </button>
+  </div>
+</div>
+
+
+  <script src="{{ url_for('static', filename='home.js') }}"></script>
+  <script src="/static/home.js"></script>
+  <script src="{{ url_for('static', filename='boom2.js') }}"></script>
+  <script src="/static/boom2.js"></script>
+  
+  <script>
+  document.getElementById("startExamBtn").addEventListener("click", async () => {
+  const name = document.getElementById("username").value.trim();
+
+  if (!name) {
+    document.getElementById("nameAlertModal").classList.remove("hidden");
+    return;
+  }
+
+  const response = await fetch(`/generate-token?name=${encodeURIComponent(name)}`);
+  
+  if (!response.ok) {
+    document.getElementById("payloadAlertModal").classList.remove("hidden");
+    return;
+  }
+
+  const data = await response.json();
+  const modal = document.createElement("div");
+  modal.className = "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
+  modal.innerHTML = `
+    <div class="bg-white max-w-md w-full p-6 rounded-lg shadow-lg text-center">
+      <h2 class="text-xl font-bold mb-4 text-yellow-600">Exam Access Token</h2>
+      <p class="mb-4 text-gray-800">This token is required to start your exam.</p>
+      <div class="bg-yellow-100 text-yellow-900 font-mono px-4 py-2 mb-4 rounded">${data.token}</div>
+      <a href="/verify?token=${data.token}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Proceed to Exam</a>
+    </div>
+  `;
+  document.body.appendChild(modal);
+});
+
+function closePayloadAlert() {
+  document.getElementById("payloadAlertModal").classList.add("hidden");
+}
+
+function closeNameAlert() {
+  document.getElementById("nameAlertModal").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>
