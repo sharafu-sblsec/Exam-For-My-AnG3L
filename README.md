@@ -1,5 +1,4 @@
-# just need test on local..?
-# bulit in Flask 
+# just need test on local..? 
 install python flask, redis-server, python redisclient
 
 # if you have linux
